@@ -67,9 +67,9 @@
         <!-- Presets -->
         <div class="form-row mb-3">
           <div class="col">
-            <select :disabled="running" id="examples" v-model="reset_choice" @change="resetPars()" class="form-control" aria-label="Example Presets">
+            <select :disabled="running" id="examples" v-model="sim_pars['location']" @change="resetPars()" class="form-control" aria-label="Example Presets">
               <option v-for="(item, index) in reset_options" :value="item">
-                {{ item }}
+                {{ item | title_case }}
               </option>
             </select>
             <b-tooltip target="examples">

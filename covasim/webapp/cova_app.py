@@ -35,8 +35,11 @@ die      = False # Whether or not to raise exceptions instead of continuing
 def get_defaults(region=None, merge=False):
     ''' Get parameter defaults '''
 
-    if region is None:
-        region = 'Example'
+    if region is None or region is '':
+        region = 'united states of america'
+
+
+    location_pars = list(cv.data.loaders.get_age_distribution().keys())
 
     regions = {
         'pop_scale': {
@@ -73,9 +76,10 @@ def get_defaults(region=None, merge=False):
 
     sim_pars = {}
     sim_pars['pop_scale']    = dict(best=1,    min=1, max=1e6,      name='Population scale factor',    tip='Multiplier for results (to approximate large populations)')
-    sim_pars['pop_size']     = dict(best=5000, min=1, max=max_pop,  name='Population size',            tip='Number of agents simulated in the model')
+    sim_pars['pop_size']     = dict(best= cv.data.loaders.get_age_distribution(region), min=1, max=max_pop,  name='Population size', tip='Number of agents simulated in the model')
     sim_pars['pop_infected'] = dict(best=10,   min=1, max=max_pop,  name='Initial infections',         tip='Number of initial seed infections in the model')
     sim_pars['rand_seed']    = dict(best=0,    min=0, max=100,      name='Random seed',                tip='Random number seed (set to 0 for different results each time)')
+    sim_pars['location'] = region
 
     epi_pars = {}
     epi_pars['beta']          = dict(best=0.015, min=0.0, max=0.2, name='Beta (infectiousness)',         tip ='Probability of infection per contact per day')
@@ -86,13 +90,12 @@ def get_defaults(region=None, merge=False):
     epi_pars['web_timetodie'] = dict(best=22.0,  min=1.0, max=60,  name='Time until death (days)',       tip ='Average number of days between infection and death')
     epi_pars['web_cfr']       = dict(best=0.02,  min=0.0, max=1.0, name='Case fatality rate',            tip ='Proportion of people who become infected who die')
 
-
-    for parkey,valuedict in regions.items():
-        sim_pars[parkey]['best'] = valuedict[region]
+    #for parkey,valuedict in regions.items():
+    #    sim_pars[parkey]['best'] = valuedict[region]
     if merge:
         output = {**sim_pars, **epi_pars}
     else:
-        output = {'sim_pars': sim_pars, 'epi_pars': epi_pars}
+        output = {'sim_pars': sim_pars, 'epi_pars': epi_pars, 'locations': location_pars }
 
     return output
 

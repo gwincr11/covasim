@@ -162,8 +162,7 @@ var vm = new Vue({
             interventionTableConfig,
             running: false,
             err: '',
-            reset_options: ['Example'],//, 'Seattle', 'Wuhan', 'Global'],
-            reset_choice: 'Example'
+            reset_options: [''],//, 'Seattle', 'Wuhan', 'Global'],
         };
     },
 
@@ -176,6 +175,13 @@ var vm = new Vue({
     filters: {
         to2sf(value) {
             return Number(value).toFixed(2);
+        },
+        title_case: function (str) {
+          str = str.toLowerCase().split(' ');
+          for (var i = 0; i < str.length; i++) {
+            str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+          }
+          return str.join(' ');
         }
     },
 
@@ -286,9 +292,11 @@ var vm = new Vue({
         async resetPars() {
             const response = await sciris.rpc('get_defaults', [this.reset_choice]);
             this.sim_pars = response.data.sim_pars;
+            this.reset_options = response.data.locations;
             this.epi_pars = response.data.epi_pars;
             this.setupFormWatcher('sim_pars');
             this.setupFormWatcher('epi_pars');
+            this.setupFormWatcher('reset_options');
             this.graphs = [];
             this.input = {
                 blob: null,
@@ -356,6 +364,7 @@ var vm = new Vue({
         loadPars() {
             this.sim_pars = this.history[this.historyIdx].sim_pars;
             this.epi_pars = this.history[this.historyIdx].epi_pars;
+            this.reset_options = this.history[this.historyIdx].reset_options;
             this.result = this.history[this.historyIdx].result;
         },
 

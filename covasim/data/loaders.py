@@ -7,7 +7,7 @@ import numpy as np
 import sciris as sc
 from . import country_age_distributions as cad
 
-__all__ = ['get_age_distribution']
+__all__ = ['get_age_distribution', 'get_regions']
 
 
 def get_age_distribution(location=None):
@@ -91,3 +91,7 @@ def get_age_distribution(location=None):
         result = result[loc]
 
     return result
+
+def get_regions():
+  return list(get_age_distribution().keys())
+
